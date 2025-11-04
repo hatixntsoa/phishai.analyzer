@@ -1,6 +1,9 @@
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
 const resultsDiv = document.getElementById('results');
+const modal = document.getElementById('preview-modal');
+const modalBody = document.getElementById('modal-body');
+const closeButton = document.querySelector('.close-button');
 
 // --- EVENT LISTENERS ---
 
@@ -31,7 +34,7 @@ resultsDiv.addEventListener('click', function(e) {
     if (header) {
         // Prevent expanding while content is loading
         if (header.querySelector('.loading-spinner')) return;
-        toggleCollapsible(header);
+        openPreviewModal(header);
         return;
     }
 
@@ -40,43 +43,44 @@ resultsDiv.addEventListener('click', function(e) {
     }
 });
 
-// --- DOM MANIPULATION ---
-
-function toggleCollapsible(header) {
-    const content = header.nextElementSibling;
-    const isActive = header.classList.contains('active');
-    const allHeaders = resultsDiv.querySelectorAll('.collapsible-header');
-
-    // Close all other sections
-    allHeaders.forEach(otherHeader => {
-        if (otherHeader !== header) {
-            otherHeader.classList.remove('active');
-            otherHeader.nextElementSibling.style.display = 'none';
-            const icon = otherHeader.querySelector('.toggle-icon');
-            if (icon) icon.textContent = '▼';
+function openPreviewModal(header) {
+    const preview = header.nextElementSibling;
+    if (preview) {
+        modalBody.innerHTML = ''; // Clear previous content
+        const previewClone = preview.cloneNode(true);
+        previewClone.style.display = 'block'; // Make it visible
+        modalBody.appendChild(previewClone);
+        modal.style.display = 'block';
+        const iframe = modalBody.querySelector('iframe');
+        if (iframe) {
+             // Height is now controlled by CSS to prevent scroll conflicts.
+            iframe.addEventListener('load', function() {
+                // No-op, height is handled by CSS max-height and overflow.
+            }, { once: true });
         }
-    });
-
-    // Toggle the clicked section
-    if (!isActive) {
-        header.classList.add('active');
-        content.style.display = 'block';
-        const icon = header.querySelector('.toggle-icon');
-        if (icon) icon.textContent = '▲';
-    } else {
-        header.classList.remove('active');
-        content.style.display = 'none';
-        const icon = header.querySelector('.toggle-icon');
-        if (icon) icon.textContent = '▼';
     }
 }
 
+closeButton.addEventListener('click', () => {
+    modal.style.display = 'none';
+});
+
+window.addEventListener('click', (e) => {
+    if (e.target == modal) {
+        modal.style.display = 'none';
+    }
+});
+
 function createAddMoreRow() {
-    if (document.querySelector('.add-more-row')) return; // Already exists
-    const addRow = document.createElement('div');
-    addRow.className = 'add-more-row';
-    addRow.textContent = 'Add More Files';
-    resultsDiv.appendChild(addRow);
+    let addRow = document.querySelector('.add-more-row');
+    if (addRow) {
+        addRow.remove(); // Remove if it exists to re-append at the end
+    } else {
+        addRow = document.createElement('div');
+        addRow.className = 'add-more-row';
+        addRow.textContent = 'Add More Files';
+    }
+    resultsDiv.appendChild(addRow); // Always append to ensure it's at the bottom
 }
 
 function handleFiles(files) {
@@ -84,7 +88,8 @@ function handleFiles(files) {
     const fileMap = new Map();
     const addRow = resultsDiv.querySelector('.add-more-row');
 
-    for (const file of files) {
+    // Reverse the file list to handle browser's reverse selection order
+    for (const file of [...files].reverse()) {
         if (!file.name.endsWith('.eml')) continue;
 
         const fileId = `file-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -99,16 +104,12 @@ function handleFiles(files) {
                     <span>${file.name}</span>
                     <span class="loading-spinner"></span>
                 </button>
-                <div class="collapsible-content">
+                <div class="collapsible-content" style="display: none;">
                     <p style="padding: 15px;">Loading email content and analytics...</p>
                 </div>
             </div>
         `;
-        if (addRow) {
-            resultsDiv.insertBefore(placeholder, addRow);
-        } else {
-            resultsDiv.appendChild(placeholder);
-        }
+        resultsDiv.appendChild(placeholder); // Always append for FIFO
     }
 
     if (!formData.has('eml_files')) return;
@@ -133,59 +134,25 @@ function handleFiles(files) {
                 <div class="collapsible">
                     <button class="collapsible-header">
                         <span>${result.filename}</span>
-                        <span class="toggle-icon">▼</span>
+                        <div class="analytics-summary">
+                            <div class="analytics-item"><span>SPF</span><span class="${result.analytics.spf}">${result.analytics.spf}</span></div>
+                            <div class="analytics-item"><span>DKIM</span><span class="${result.analytics.dkim}">${result.analytics.dkim}</span></div>
+                            <div class="analytics-item"><span>DMARC</span><span class="${result.analytics.dmarc}">${result.analytics.dmarc}</span></div>
+                        </div>
                     </button>
-                    <div class="collapsible-content" style="display: none;">
-                        <div class="email-preview">
-                            <div class="email-header">
-                                <h3>${result.subject}</h3>
-                                <p><strong>From:</strong> ${result.from}</p>
-                                <p><strong>To:</strong> ${result.to}</p>
-                                <p><strong>Date:</strong> ${result.date}</p>
-                            </div>
-                            <div class="email-body">
-                                <iframe srcdoc="${result.body.replace(/"/g, '&quot;')}"></iframe>
-                            </div>
-                            <div class="analytics">
-                                <h4>Analytics</h4>
-                                <div class="analytics-item"><span>SPF</span><span class="${result.analytics.spf}">${result.analytics.spf}</span></div>
-                                <div class="analytics-item"><span>DKIM</span><span class="${result.analytics.dkim}">${result.analytics.dkim}</span></div>
-                                <div class="analytics-item"><span>DMARC</span><span class="${result.analytics.dmarc}">${result.analytics.dmarc}</span></div>
-                            </div>
+                    <div class="email-preview" style="display: none;">
+                        <div class="email-header">
+                            <h3>${result.subject}</h3>
+                            <p><strong>From:</strong> ${result.from}</p>
+                            <p><strong>To:</strong> ${result.to}</p>
+                            <p><strong>Date:</strong> ${result.date}</p>
+                        </div>
+                        <div class="email-body">
+                            <iframe srcdoc="${result.body.replace(/"/g, '&quot;')}"></iframe>
                         </div>
                     </div>
                 </div>
             `;
-
-            const iframe = targetDiv.querySelector('iframe');
-            const collapsibleContent = targetDiv.querySelector('.collapsible-content');
-
-            if (iframe && collapsibleContent) {
-                iframe.addEventListener('load', function() {
-                    // 1. Temporarily make it visible but off-screen to measure
-                    collapsibleContent.style.position = 'absolute';
-                    collapsibleContent.style.visibility = 'hidden';
-                    collapsibleContent.style.display = 'block';
-
-                    const height = this.contentWindow.document.documentElement.scrollHeight;
-                    this.style.height = height + 'px';
-
-                    // 2. Hide it again, resetting styles, now that height is set
-                    collapsibleContent.style.position = '';
-                    collapsibleContent.style.visibility = '';
-                    collapsibleContent.style.display = 'none';
-
-                    // 3. Swap loading spinner for toggle icon
-                    const header = targetDiv.querySelector('.collapsible-header');
-                    const spinner = header.querySelector('.loading-spinner');
-                    if (spinner) {
-                         const toggleIcon = document.createElement('span');
-                         toggleIcon.className = 'toggle-icon';
-                         toggleIcon.textContent = '▼';
-                         spinner.replaceWith(toggleIcon);
-                    }
-                }, { once: true });
-            }
         });
     })
     .catch(error => {

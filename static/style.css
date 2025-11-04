@@ -150,36 +150,24 @@ h1 {
 .email-body iframe {
     width: 100%;
     border: 1px solid #eee;
-    overflow: hidden;
+    overflow: hidden; /* Re-added to prevent iframe scrollbar */
 }
 
-.analytics {
-    background-color: #fcfcfc;
-    padding: 15px;
-    border-top: 1px solid #ddd;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
+.modal-content .email-body iframe {
+    min-height: 80vh;
 }
 
-.analytics h4 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #555;
+.analytics-summary {
+    display: flex;
+    gap: 15px;
+    align-items: center;
 }
 
 .analytics-item {
     display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid #eee;
-}
-
-.analytics-item:last-child {
-    border-bottom: none;
-}
-
-.analytics-item span {
-    font-weight: bold;
+    gap: 5px;
+    align-items: center;
+    font-size: 0.9em;
 }
 
 .pass {
@@ -188,4 +176,68 @@ h1 {
 
 .fail {
     color: #c0392b;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 900px;
+    max-height: 90vh; /* Max height for internal scrolling */
+    overflow-y: auto; /* Enable internal scrolling */
+    border-radius: 8px;
+}
+
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    z-index: 1001; /* Ensure it's above modal content */
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#modal-body {
+    /* Removed max-height and overflow-y: hidden; */
+}
+
+.modal-content .email-body iframe {
+    min-height: 60vh; /* Keep min-height to prevent initial collapse */
+    /* Removed max-height and overflow-y: auto; */
+}
+
+.modal-content .email-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #fefefe; /* Ensure background is opaque when sticky */
+    /* Removed box-shadow */
+    width: 100%; /* Ensure header matches parent width */
+    box-sizing: border-box; /* Include padding in width calculation */
 }

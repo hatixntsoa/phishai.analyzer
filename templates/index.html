@@ -14,6 +14,14 @@
             <p>Drag & Drop EML files here or click to select</p>
         </div>
         <div id="results"></div>
+
+        <!-- The Modal -->
+        <div id="preview-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <div id="modal-body"></div>
+            </div>
+        </div>
     </div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
