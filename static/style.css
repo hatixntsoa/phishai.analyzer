@@ -150,6 +150,7 @@ h1 {
 .email-body iframe {
     width: 100%;
     border: 1px solid #eee;
+    overflow: hidden;
 }
 
 .analytics {
