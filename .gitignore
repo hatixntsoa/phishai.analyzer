@@ -1,0 +1,28 @@
+# Ignore .env file
+**/.env
+
+# Do not ignore .env.example
+!**/.env.example
+
+# Ignore python virtual environment
+**/[Bb]in
+**/[Ii]nclude
+**/[Ll]ib
+**/[Ll]ib64
+**/[Ll]ocal
+**/[Ss]cripts
+**/[Ss]hare
+**/pyvenv.cfg
+
+# Ignore uv.lock
+**/uv.lock
+
+# Byte-compiled / optimized / DLL files
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
+
+# Ignore build, dist, egg info
+**/build/
+**/dist/
+**/*.egg-info/

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishAI EML Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>PhishAI EML Analyzer</h1>
+        <div id="drop-zone">
+            <input type="file" id="file-input" multiple style="display: none;" />
+            <p>Drag & Drop EML files here or click to select</p>
+        </div>
+        <div id="results"></div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
