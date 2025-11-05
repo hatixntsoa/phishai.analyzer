@@ -178,6 +178,15 @@ h1 {
     color: #c0392b;
 }
 
+.phishing-flag {
+    border-left: 5px solid #f04747; /* Discord red */
+    background-color: #ffe0e0; /* Light red background */
+}
+
+.collapsible.phishing-flag .collapsible-header {
+    background-color: #ffe0e0; /* Ensure header also gets the light red background */
+}
+
 /* Modal Styles */
 .modal {
     display: none;
@@ -240,4 +249,9 @@ h1 {
     /* Removed box-shadow */
     width: 100%; /* Ensure header matches parent width */
     box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.modal-content.modal-phishing-flag {
+    /* Removed background-color */
+    border: 2px solid #f04747; /* Red border for phishing modal */
 }

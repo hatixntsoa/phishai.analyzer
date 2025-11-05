@@ -51,6 +51,15 @@ function openPreviewModal(header) {
         previewClone.style.display = 'block'; // Make it visible
         modalBody.appendChild(previewClone);
         modal.style.display = 'block';
+
+        // Check if the original collapsible had the phishing flag
+        const collapsibleParent = header.closest('.collapsible');
+        if (collapsibleParent && collapsibleParent.classList.contains('phishing-flag')) {
+            modal.querySelector('.modal-content').classList.add('modal-phishing-flag');
+        } else {
+            modal.querySelector('.modal-content').classList.remove('modal-phishing-flag');
+        }
+
         const iframe = modalBody.querySelector('iframe');
         if (iframe) {
              // Height is now controlled by CSS to prevent scroll conflicts.
@@ -130,8 +139,10 @@ function handleFiles(files) {
                 return;
             }
 
+            const phishingClass = result.analytics.is_phishing ? 'phishing-flag' : '';
+
             targetDiv.innerHTML = `
-                <div class="collapsible">
+                <div class="collapsible ${phishingClass}">
                     <button class="collapsible-header">
                         <span>${result.filename}</span>
                         <div class="analytics-summary">

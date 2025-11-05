@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import email
 import os
+import random # Import the random module
 
 app = Flask(__name__)
 
@@ -55,6 +56,8 @@ def analyze():
                         return "Could not decode body"
                 return "No body found"
 
+            is_phishing = random.random() < 0.5 # 50% chance of being phishing
+
             result = {
                 'filename': file.filename,
                 'subject': get_decoded_header('Subject'),
@@ -67,7 +70,8 @@ def analyze():
                     'dkim': 'pass',
                     'dmarc': 'pass',
                     'links': [],
-                    'attachments': []
+                    'attachments': [],
+                    'is_phishing': is_phishing # Add phishing flag
                 }
             }
             results.append(result)
