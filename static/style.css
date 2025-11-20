@@ -60,9 +60,11 @@ h1 {
 }
 
 .collapsible {
-    margin-bottom: 10px;
+    padding-bottom: 2px !important;
+    margin-bottom: 10px !important;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     border-radius: 8px;
+    overflow: hidden;
 }
 
 .collapsible-header {
@@ -72,7 +74,7 @@ h1 {
     padding: 15px;
     width: 100%;
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 0 8px 8px 0;
     text-align: left;
     outline: none;
     font-size: 1em;
@@ -178,6 +180,36 @@ h1 {
     color: #c0392b;
 }
 
+.collapsible.legit {
+    background-color: #f0fdf4 !important;     /* Very light green */
+    border-left: 5px solid #22c55e;           /* Bright green left bar */
+}
+
+.collapsible.legit .collapsible-header {
+    background-color: #e9fce9 !important;     /* Slightly darker green for header */
+    border-bottom: 1px solid #bbf7d0;
+}
+
+.collapsible.legit .reasons-box.legit {
+    background-color: #e9fce9;
+    /* border: 1px solid #bbf7d0; */
+}
+
+/* Also make sure phishing keeps its red (for symmetry) */
+.collapsible.phishing {
+    background-color: #fef2f2 !important;
+    border-left: 5px solid #ef4444;
+}
+
+.collapsible.phishing .collapsible-header {
+    background-color: #fee2e2 !important;
+}
+
+.collapsible.phishing .reasons-box.phishing {
+    background-color: #fee2e2;
+    /* border: 1px solid #fca5a5; */
+}
+
 .phishing-flag {
     border-left: 5px solid #f04747; /* Discord red */
     background-color: #ffe0e0; /* Light red background */
@@ -255,3 +287,61 @@ h1 {
     /* Removed background-color */
     border: 2px solid #f04747; /* Red border for phishing modal */
 }
+
+/* Unified Reasons Box - Always visible, no left border */
+.reasons-box {
+    padding: 16px;
+    /* margin: 12px 15px; */
+    margin: 12px 15px 24px 15px !important;
+    border-radius: 8px;
+    font-size: 0.95em;
+    line-height: 1.5;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.reasons-box.phishing {
+    background-color: #ffebee;
+    border: 1px solid #ffcdd2;
+}
+
+.reasons-box.legit {
+    background-color: #e8f5e9;
+    border: 1px solid #c8e6c9;
+}
+
+.reasons-box strong {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1.05em;
+}
+
+.reasons-box.phishing strong {
+    color: #c62828;
+}
+
+.reasons-box.legit strong {
+    color: #2e7d32;
+}
+
+.reasons-box ul {
+    margin: 8px 0 0 0;
+    padding-left: 22px;
+}
+
+.reasons-box li {
+    margin-bottom: 5px;
+}
+
+/* Keep confidence badge colors */
+.confidence-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+}
+.confidence-badge.high { background-color: #d32f2f; }
+.confidence-badge.medium { background-color: #f57c00; }
+.confidence-badge.low { background-color: #388e3c; }

@@ -44,7 +44,8 @@ resultsDiv.addEventListener('click', function(e) {
 });
 
 function openPreviewModal(header) {
-    const preview = header.nextElementSibling;
+    // const preview = header.nextElementSibling;
+  const preview = header.nextElementSibling.nextElementSibling;
     if (preview) {
         modalBody.innerHTML = ''; // Clear previous content
         const previewClone = preview.cloneNode(true);
@@ -141,30 +142,115 @@ function handleFiles(files) {
 
             const phishingClass = result.analytics.is_phishing ? 'phishing-flag' : '';
 
-            targetDiv.innerHTML = `
-                <div class="collapsible ${phishingClass}">
-                    <button class="collapsible-header">
-                        <span>${result.filename}</span>
-                        <div class="analytics-summary">
-                            <div class="analytics-item"><span>SPF</span><span class="${result.analytics.spf}">${result.analytics.spf}</span></div>
-                            <div class="analytics-item"><span>DKIM</span><span class="${result.analytics.dkim}">${result.analytics.dkim}</span></div>
-                            <div class="analytics-item"><span>DMARC</span><span class="${result.analytics.dmarc}">${result.analytics.dmarc}</span></div>
-                        </div>
-                    </button>
-                    <div class="email-preview" style="display: none;">
-                        <div class="email-header">
-                            <h3>${result.subject}</h3>
-                            <p><strong>From:</strong> ${result.from}</p>
-                            <p><strong>To:</strong> ${result.to}</p>
-                            <p><strong>Date:</strong> ${result.date}</p>
-                        </div>
-                        <div class="email-body">
-                            <iframe srcdoc="${result.body.replace(/"/g, '&quot;')}"></iframe>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
+            // targetDiv.innerHTML = `
+            //     <div class="collapsible ${phishingClass}">
+            //         <button class="collapsible-header">
+            //             <span>${result.filename}</span>
+            //             <div class="analytics-summary">
+            //                 <div class="analytics-item"><span>SPF</span><span class="${result.analytics.spf}">${result.analytics.spf}</span></div>
+            //                 <div class="analytics-item"><span>DKIM</span><span class="${result.analytics.dkim}">${result.analytics.dkim}</span></div>
+            //                 <div class="analytics-item"><span>DMARC</span><span class="${result.analytics.dmarc}">${result.analytics.dmarc}</span></div>
+            //             </div>
+            //         </button>
+            //         <div class="email-preview" style="display: none;">
+            //             <div class="email-header">
+            //                 <h3>${result.subject}</h3>
+            //                 <p><strong>From:</strong> ${result.from}</p>
+            //                 <p><strong>To:</strong> ${result.to}</p>
+            //                 <p><strong>Date:</strong> ${result.date}</p>
+            //             </div>
+            //             <div class="email-body">
+            //                 <iframe srcdoc="${result.body.replace(/"/g, '&quot;')}"></iframe>
+            //             </div>
+            //         </div>
+            //     </div>
+            // `;
+// targetDiv.innerHTML = `
+//     <div class="collapsible ${phishingClass}">
+//         <button class="collapsible-header">
+//             <span>${result.filename}</span>
+//             <div class="analytics-summary">
+//                 <div class="analytics-item"><span>SPF</span><span class="${result.analytics.spf}">${result.analytics.spf}</span></div>
+//                 <div class="analytics-item"><span>DKIM</span><span class="${result.analytics.dkim}">${result.analytics.dkim}</span></div>
+//                 <div class="analytics-item"><span>DMARC</span><span class="${result.analytics.dmarc}">${result.analytics.dmarc}</span></div>
+//             </div>
+//         </button>
+//
+//         <!-- REASONS BOX - ALWAYS VISIBLE -->
+//         <div class="reasons-box ${result.analytics.is_phishing ? 'phishing' : 'legit'}">
+//             <div class="confidence-badge ${result.analytics.confidence || 'medium'}">
+//                 Confidence: ${result.analytics.confidence?.charAt(0).toUpperCase() + result.analytics.confidence?.slice(1) || 'Medium'}
+//             </div>
+//             <strong>
+//                 ${result.analytics.is_phishing 
+//                     ? 'This email is PHISHING' 
+//                     : 'This email appears LEGITIMATE'}
+//             </strong>
+//             <ul>
+//                 ${result.analytics.reasons && result.analytics.reasons.length > 0
+//                     ? result.analytics.reasons.map(r => `<li>${r}</li>`).join('')
+//                     : '<li>No red flags detected.</li>'
+//                 }
+//             </ul>
+//         </div>
+//
+//         <!-- Full email preview (hidden until clicked) -->
+//         <div class="email-preview" style="display: none;">
+//             <div class="email-header">
+//                 <h3>${result.subject}</h3>
+//                 <p><strong>From:</strong> ${result.from}</p>
+//                 <p><strong>To:</strong> ${result.to}</p>
+//                 <p><strong>Date:</strong> ${result.date}</p>
+//             </div>
+//             <div class="email-body">
+//                 <iframe srcdoc="${result.body.replace(/"/g, '&quot;')}"></iframe>
+//             </div>
+//         </div>
+//     </div>
+// `;
+
+        targetDiv.innerHTML = `
+      <div class="collapsible ${result.analytics.is_phishing ? 'phishing' : 'legit'}">
+        <button class="collapsible-header">
+            <span>${result.filename}</span>
+            <div class="analytics-summary">
+                <div class="analytics-item"><span>SPF</span><span class="${result.analytics.spf}">unknown</span></div>
+                <div class="analytics-item"><span>DKIM</span><span class="${result.analytics.dkim}">unknown</span></div>
+                <div class="analytics-item"><span>DMARC</span><span class="${result.analytics.dmarc}">unknown</span></div>
+            </div>
+        </button>
+
+        <!-- REASONS BOX: ALWAYS VISIBLE -->
+        <div class="reasons-box ${result.analytics.is_phishing ? 'phishing' : 'legit'}">
+            <div class="confidence-badge ${result.analytics.confidence || 'medium'}">
+                Confidence: ${result.analytics.confidence?.charAt(0).toUpperCase() + result.analytics.confidence?.slice(1) || 'Medium'}
+            </div>
+            <strong>
+                ${result.analytics.is_phishing ? 'This email is PHISHING' : 'This email appears LEGITIMATE'}
+            </strong>
+            <ul>
+                ${result.analytics.reasons && result.analytics.reasons.length > 0
+                    ? result.analytics.reasons.map(r => `<li>${r}</li>`).join('')
+                    : '<li>No red flags detected.</li>'
+                }
+            </ul>
+        </div>
+
+        <!-- EMAIL PREVIEW: ONLY SHOW WHEN CLICKED -->
+        <div class="email-preview" style="display: none;">
+            <div class="email-header">
+                <h3>${result.subject}</h3>
+                <p><strong>From:</strong> ${result.from}</p>
+                <p><strong>To:</strong> ${result.to}</p>
+                <p><strong>Date:</strong> ${result.date}</p>
+            </div>
+            <div class="email-body">
+                <iframe srcdoc="${result.body.replace(/"/g, '&quot;')}"></iframe>
+            </div>
+        </div>
+    </div>
+`;
+         });
     })
     .catch(error => {
         console.error('Error:', error);
