@@ -214,9 +214,9 @@ function handleFiles(files) {
         <button class="collapsible-header">
             <span>${result.filename}</span>
             <div class="analytics-summary">
-                <div class="analytics-item"><span>SPF</span><span class="${result.analytics.spf}">unknown</span></div>
-                <div class="analytics-item"><span>DKIM</span><span class="${result.analytics.dkim}">unknown</span></div>
-                <div class="analytics-item"><span>DMARC</span><span class="${result.analytics.dmarc}">unknown</span></div>
+                <!-- <div class="analytics-item"><span>SPF</span><span class="${result.analytics.spf}">${result.analytics.spf.toUpperCase()}</span></div> -->
+                <!-- <div class="analytics-item"><span>DKIM</span><span class="${result.analytics.dkim}">${result.analytics.dkim.toUpperCase()}</span></div> -->
+                <!-- <div class="analytics-item"><span>DMARC</span><span class="${result.analytics.dmarc}">${result.analytics.dmarc.toUpperCase()}</span></div> -->
             </div>
         </button>
 

@@ -94,6 +94,115 @@ def extract_email_data(msg):
         "attachment_filenames": attachment_filenames
     }, body_html
 
+## This is header email logic, do not touch
+## may include false positives, maybe next feature :)
+#
+# def check_authentication_results(msg):
+#     """Check Authentication-Results header. If any check exists and is not PASS → phishing"""
+#     auth_header = msg.get("Authentication-Results", "")
+#     if not auth_header:
+#         return "fail", "fail", "fail"  # No auth header at all → phishing
+#
+#     auth_lower = auth_header.lower()
+#
+#     spf = dkim = dmarc = "unknown"
+#
+#     # Detect presence and result
+#     if "spf=pass" in auth_lower:
+#         spf = "pass"
+#     elif "spf=" in auth_lower:  # spf= exists but not pass → fail, neutral, etc.
+#         spf = "fail"
+#
+#     if "dkim=pass" in auth_lower:
+#         dkim = "pass"
+#     elif "dkim=" in auth_lower:
+#         dkim = "fail"
+#
+#     if "dmarc=pass" in auth_lower:
+#         dmarc = "pass"
+#     elif "dmarc=" in auth_lower:
+#         dmarc = "fail"
+#
+#     # Final rule: if ANY check exists and is NOT "pass" → phishing
+#     if (spf != "unknown" and spf != "pass") or \
+#        (dkim != "unknown" and dkim != "pass") or \
+#        (dmarc != "unknown" and dmarc != "pass"):
+#         return "fail", "fail", "fail"
+#
+#     # Otherwise: either all pass, or no checks performed → let model decide
+#     return spf, dkim, dmarc
+#
+#
+# @app.route('/analyze', methods=['POST'])
+# def analyze():
+#     files = request.files.getlist('eml_files')
+#     results = []
+#     emails_batch = []  # Only for emails that need model analysis
+#
+#     for file in files:
+#         try:
+#             msg = email.message_from_binary_file(file, policy=default)
+#             email_data, body_html = extract_email_data(msg)
+#
+#             # === SPF/DKIM/DMARC CHECK ===
+#             spf, dkim, dmarc = check_authentication_results(msg)
+#
+#             # Auto-flag as phishing if any fail or missing
+#             if spf == "fail" or dkim == "fail" or dmarc == "fail":
+#                 is_phishing = True
+#                 confidence = "high"
+#                 reasons = ["Failed email authentication (SPF/DKIM/DMARC missing or failed)"]
+#             else:
+#                 # Let the model decide
+#                 emails_batch.append(email_data)
+#                 is_phishing = False
+#                 confidence = ""
+#                 reasons = []
+#
+#             results.append({
+#                 'filename': file.filename,
+#                 'subject': msg.get('Subject', '(no subject)'),
+#                 'from': msg.get('From', ''),
+#                 'to': msg.get('To', ''),
+#                 'date': msg.get('Date', ''),
+#                 'body': body_html,
+#                 'analytics': {
+#                     'spf': spf,
+#                     'dkim': dkim,
+#                     'dmarc': dmarc,
+#                     'is_phishing': is_phishing,
+#                     'confidence': confidence,
+#                     'reasons': reasons
+#                 }
+#             })
+#         except Exception as e:
+#             results.append({
+#                 'filename': file.filename,
+#                 'error': f"Parse error: {str(e)}",
+#                 'analytics': {'is_phishing': True, 'spf': 'fail', 'dkim': 'fail', 'dmarc': 'fail'}
+#             })
+#
+#     # Only call model if there are emails that passed auth checks
+#     if emails_batch:
+#         try:
+#             response = requests.post(MODEL_API, json={"emails": emails_batch}, timeout=60)
+#             if response.status_code == 200:
+#                 verdicts = response.json().get("verdicts", [])
+#                 batch_idx = 0
+#                 for i, result in enumerate(results):
+#                     if not result['analytics']['is_phishing']:  # was waiting for model
+#                         verdict_data = verdicts[batch_idx]
+#                         result['analytics'].update({
+#                             'is_phishing': verdict_data['verdict'] == 'phishing',
+#                             'confidence': verdict_data.get('confidence', 'medium'),
+#                             'reasons': verdict_data.get('reasons', [])
+#                         })
+#                         batch_idx += 1
+#         except Exception as e:
+#             print(f"Model API failed: {e}")
+#
+#     return jsonify(results)
+
 
 @app.route('/')
 def index():

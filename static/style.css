@@ -60,12 +60,14 @@ h1 {
 }
 
 .collapsible {
-    padding-bottom: 2px !important;
     margin-bottom: 10px !important;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     border-radius: 8px;
     overflow: hidden;
 }
+
+.pass { color: #22c55e; font-weight: bold; }
+.fail { color: #ef4444; font-weight: bold; }
 
 .collapsible-header {
     background-color: #f7f7f7;
@@ -74,7 +76,7 @@ h1 {
     padding: 15px;
     width: 100%;
     border: 1px solid #ddd;
-    border-radius: 0 8px 8px 0;
+    border-radius: 0 8px 0 0;
     text-align: left;
     outline: none;
     font-size: 1em;
@@ -187,7 +189,6 @@ h1 {
 
 .collapsible.legit .collapsible-header {
     background-color: #e9fce9 !important;     /* Slightly darker green for header */
-    border-bottom: 1px solid #bbf7d0;
 }
 
 .collapsible.legit .reasons-box.legit {
