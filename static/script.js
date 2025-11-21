@@ -81,6 +81,13 @@ window.addEventListener('click', (e) => {
     }
 });
 
+// Close modal with Escape key
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.style.display === 'block') {
+        modal.style.display = 'none';
+    }
+});
+
 // function createAddMoreRow() {
 //     let addRow = document.querySelector('.add-more-row');
 //     if (addRow) {
@@ -268,6 +275,13 @@ function handleFiles(files) {
 //     </div>
 // `;
 
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
         targetDiv.innerHTML = `
       <div class="collapsible ${result.analytics.is_phishing ? 'phishing' : 'legit'}">
         <button class="collapsible-header">
@@ -297,12 +311,18 @@ function handleFiles(files) {
 
         <!-- EMAIL PREVIEW: ONLY SHOW WHEN CLICKED -->
         <div class="email-preview" style="display: none;">
-            <div class="email-header">
-                <h3>${result.subject}</h3>
-                <p><strong>From:</strong> ${result.from}</p>
-                <p><strong>To:</strong> ${result.to}</p>
-                <p><strong>Date:</strong> ${result.date}</p>
-            </div>
+            <!-- <div class="email-header"> -->
+            <!--     <h3>${result.subject}</h3> -->
+            <!--     <p><strong>From:</strong> ${result.from}</p> -->
+            <!--     <p><strong>To:</strong> ${result.to}</p> -->
+            <!--     <p><strong>Date:</strong> ${result.date}</p> -->
+            <!-- </div> -->
+          <div class="email-header">
+              <h3>${escapeHtml(result.subject)}</h3>
+              <div class="email-address-line"><strong>From:</strong> ${escapeHtml(result.from)}</div>
+              <div class="email-address-line"><strong>To:</strong>   ${escapeHtml(result.to)}</div>
+              <div class="email-address-line"><strong>Date:</strong> ${escapeHtml(result.date)}</div>
+          </div>
             <div class="email-body">
                 <iframe srcdoc="${result.body.replace(/"/g, '&quot;')}"></iframe>
             </div>
