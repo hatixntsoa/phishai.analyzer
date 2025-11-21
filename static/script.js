@@ -81,17 +81,76 @@ window.addEventListener('click', (e) => {
     }
 });
 
+// function createAddMoreRow() {
+//     let addRow = document.querySelector('.add-more-row');
+//     if (addRow) {
+//         addRow.remove(); // Remove if it exists to re-append at the end
+//     } else {
+//         addRow = document.createElement('div');
+//         addRow.className = 'add-more-row';
+//         addRow.textContent = 'Add More Files';
+//     }
+//     resultsDiv.appendChild(addRow); // Always append to ensure it's at the bottom
+// }
+
+
 function createAddMoreRow() {
-    let addRow = document.querySelector('.add-more-row');
-    if (addRow) {
-        addRow.remove(); // Remove if it exists to re-append at the end
-    } else {
-        addRow = document.createElement('div');
-        addRow.className = 'add-more-row';
-        addRow.textContent = 'Add More Files';
-    }
-    resultsDiv.appendChild(addRow); // Always append to ensure it's at the bottom
+    const old = document.querySelector('.add-more-row');
+    if (old) old.remove();
+
+    const addRow = document.createElement('div');
+    addRow.className = 'add-more-row';
+    addRow.innerHTML = `
+        <p style="margin:0; pointer-events:none; user-select:none;">
+            Add more EML files
+        </p>
+    `;
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.accept = '.eml';
+    input.style.display = 'none';
+    addRow.appendChild(input);
+
+    // CLICK: open file picker
+    addRow.addEventListener('click', (e) => {
+        e.stopPropagation();  // THIS IS THE FIX — stops event from bubbling
+        input.click();
+    });
+
+    // FILE SELECTED
+    input.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleFiles(e.target.files);
+            e.target.value = '';  // allow same file again
+        }
+    });
+
+    // DRAG & DROP (unchanged — already perfect)
+    addRow.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        addRow.style.border = '2px dashed #3498db';
+        addRow.style.backgroundColor = '#f0f8ff';
+    });
+
+    addRow.addEventListener('dragleave', () => {
+        addRow.style.border = '';
+        addRow.style.backgroundColor = '';
+    });
+
+    addRow.addEventListener('drop', (e) => {
+        e.preventDefault();
+        addRow.style.border = '';
+        addRow.style.backgroundColor = '';
+        if (e.dataTransfer.files.length > 0) {
+            handleFiles(e.dataTransfer.files);
+        }
+    });
+
+    resultsDiv.appendChild(addRow);
 }
+
 
 function handleFiles(files) {
     const formData = new FormData();

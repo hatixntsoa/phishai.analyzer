@@ -113,13 +113,34 @@ h1 {
     transform: rotate(180deg);
 }
 
+/* .loading-spinner { */
+/*     border: 4px solid #f3f3f3; */
+/*     border-top: 4px solid #3498db; */
+/*     border-radius: 50%; */
+/*     width: 20px; */
+/*     height: 20px; */
+/*     animation: spin 1s linear infinite; */
+/* } */
+
 .loading-spinner {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #3498db;
+    flex-shrink: 0;                    /* THIS IS THE KEY — never shrink */
+    width: 20px !important;           /* Fixed size */
+    height: 20px !important;          /* Fixed size → always perfect circle */
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
     border-radius: 50%;
-    width: 20px;
-    height: 20px;
     animation: spin 1s linear infinite;
+    box-sizing: border-box;
+    margin-left: 10px;
+}
+
+/* Optional: smaller on very tiny screens but still round */
+@media (max-width: 480px) {
+    .loading-spinner {
+        width: 18px !important;
+        height: 18px !important;
+        border-width: 2px;
+    }
 }
 
 @keyframes spin {
@@ -185,10 +206,16 @@ h1 {
 .collapsible.legit {
     background-color: #f0fdf4 !important;     /* Very light green */
     border-left: 5px solid #22c55e;           /* Bright green left bar */
+    border-right: 1px solid #c8e6c9;
+    border-bottom: 1px solid #c8e6c9;
 }
 
 .collapsible.legit .collapsible-header {
     background-color: #e9fce9 !important;     /* Slightly darker green for header */
+    border-top: 1px solid #c8e6c9;
+    border-bottom: 1px solid #c8e6c9;
+    border-right: none;
+    border-left: none;
 }
 
 .collapsible.legit .reasons-box.legit {
@@ -200,10 +227,16 @@ h1 {
 .collapsible.phishing {
     background-color: #fef2f2 !important;
     border-left: 5px solid #ef4444;
+    border-right: 1px solid #ffcdd2;
+    border-bottom: 1px solid #ffcdd2;
 }
 
 .collapsible.phishing .collapsible-header {
     background-color: #fee2e2 !important;
+    border-top: 1px solid #ffcdd2;
+    border-bottom: 1px solid #ffcdd2;
+    border-right: none;
+    border-left: none;
 }
 
 .collapsible.phishing .reasons-box.phishing {
@@ -343,6 +376,39 @@ h1 {
     color: white;
     margin-bottom: 10px;
 }
-.confidence-badge.high { background-color: #d32f2f; }
-.confidence-badge.medium { background-color: #f57c00; }
-.confidence-badge.low { background-color: #388e3c; }
+
+/* LEGIT EMAIL → Confidence badge ALWAYS green (overrides high/medium/low) */
+.collapsible.legit .confidence-badge {
+    background-color: #22c55e !important;  /* Bright green */
+    color: white !important;
+}
+
+/* PHISHING EMAIL → Keep original red/orange colors (high/medium) */
+.collapsible.phishing .confidence-badge.high {
+    background-color: #ef4444 !important;  /* Red for high */
+}
+
+.collapsible.phishing .confidence-badge.medium {
+    background-color: #f97316 !important;  /* Orange for medium */
+}
+
+.collapsible.phishing .confidence-badge.low {
+    background-color: #84cc16 !important;  /* Lime for low (rare) */
+}
+
+
+/* FIX: Loading state — full clean border on all sides */
+.collapsible .collapsible-header .loading-spinner {
+    display: inline-block;
+}
+
+.collapsible:has(.loading-spinner) {
+    border: 1px solid #ddd !important;
+    border-radius: 8px !important;
+    overflow: hidden;
+}
+
+.collapsible:has(.loading-spinner) .collapsible-header {
+    border-bottom: 1px solid #ddd !important;
+    border-radius: 8px 8px 0 0 !important;
+}
