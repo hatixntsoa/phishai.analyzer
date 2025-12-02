@@ -1,3 +1,13 @@
-Flask==3.0.3
-requests==2.32.3
-beautifulsoup4==4.12.3
+# Analyzer App
+Flask
+requests
+beautifulsoup4
+
+# Ollama API Endpoint
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+pydantic==2.9.2
+ollama==0.3.3
+python-multipart==0.0.9
+email-validator==2.2.0
+rapidfuzz
