@@ -5,12 +5,10 @@ const modal = document.getElementById('preview-modal');
 const modalBody = document.getElementById('modal-body');
 const closeButton = document.querySelector('.close-button');
 
-// --- EVENT LISTENERS ---
-
 dropZone.addEventListener('click', () => fileInput.click());
 fileInput.addEventListener('change', (e) => {
     handleFiles(e.target.files);
-    e.target.value = ''; // Allow re-uploading the same file
+    e.target.value = '';
 });
 
 dropZone.addEventListener('dragover', (e) => {
@@ -44,12 +42,11 @@ resultsDiv.addEventListener('click', function(e) {
 });
 
 function openPreviewModal(header) {
-    // const preview = header.nextElementSibling;
   const preview = header.nextElementSibling.nextElementSibling;
     if (preview) {
-        modalBody.innerHTML = ''; // Clear previous content
+        modalBody.innerHTML = '';
         const previewClone = preview.cloneNode(true);
-        previewClone.style.display = 'block'; // Make it visible
+        previewClone.style.display = 'block';
         modalBody.appendChild(previewClone);
         modal.style.display = 'block';
 
@@ -63,10 +60,11 @@ function openPreviewModal(header) {
 
         const iframe = modalBody.querySelector('iframe');
         if (iframe) {
-             // Height is now controlled by CSS to prevent scroll conflicts.
-            iframe.addEventListener('load', function() {
-                // No-op, height is handled by CSS max-height and overflow.
-            }, { once: true });
+          iframe.addEventListener(
+            'load',
+            function() {},
+            { once: true }
+          );
         }
     }
 }
@@ -88,19 +86,6 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
-// function createAddMoreRow() {
-//     let addRow = document.querySelector('.add-more-row');
-//     if (addRow) {
-//         addRow.remove(); // Remove if it exists to re-append at the end
-//     } else {
-//         addRow = document.createElement('div');
-//         addRow.className = 'add-more-row';
-//         addRow.textContent = 'Add More Files';
-//     }
-//     resultsDiv.appendChild(addRow); // Always append to ensure it's at the bottom
-// }
-
-
 function createAddMoreRow() {
     const old = document.querySelector('.add-more-row');
     if (old) old.remove();
@@ -120,21 +105,18 @@ function createAddMoreRow() {
     input.style.display = 'none';
     addRow.appendChild(input);
 
-    // CLICK: open file picker
     addRow.addEventListener('click', (e) => {
-        e.stopPropagation();  // THIS IS THE FIX — stops event from bubbling
+        e.stopPropagation();
         input.click();
     });
 
-    // FILE SELECTED
     input.addEventListener('change', (e) => {
         if (e.target.files.length > 0) {
             handleFiles(e.target.files);
-            e.target.value = '';  // allow same file again
+            e.target.value = '';
         }
     });
 
-    // DRAG & DROP (unchanged — already perfect)
     addRow.addEventListener('dragover', (e) => {
         e.preventDefault();
         addRow.style.border = '2px dashed #3498db';
@@ -185,7 +167,7 @@ function handleFiles(files) {
                 </div>
             </div>
         `;
-        resultsDiv.appendChild(placeholder); // Always append for FIFO
+        resultsDiv.appendChild(placeholder);
     }
 
     if (!formData.has('eml_files')) return;
@@ -208,79 +190,12 @@ function handleFiles(files) {
 
             const phishingClass = result.analytics.is_phishing ? 'phishing-flag' : '';
 
-            // targetDiv.innerHTML = `
-            //     <div class="collapsible ${phishingClass}">
-            //         <button class="collapsible-header">
-            //             <span>${result.filename}</span>
-            //             <div class="analytics-summary">
-            //                 <div class="analytics-item"><span>SPF</span><span class="${result.analytics.spf}">${result.analytics.spf}</span></div>
-            //                 <div class="analytics-item"><span>DKIM</span><span class="${result.analytics.dkim}">${result.analytics.dkim}</span></div>
-            //                 <div class="analytics-item"><span>DMARC</span><span class="${result.analytics.dmarc}">${result.analytics.dmarc}</span></div>
-            //             </div>
-            //         </button>
-            //         <div class="email-preview" style="display: none;">
-            //             <div class="email-header">
-            //                 <h3>${result.subject}</h3>
-            //                 <p><strong>From:</strong> ${result.from}</p>
-            //                 <p><strong>To:</strong> ${result.to}</p>
-            //                 <p><strong>Date:</strong> ${result.date}</p>
-            //             </div>
-            //             <div class="email-body">
-            //                 <iframe srcdoc="${result.body.replace(/"/g, '&quot;')}"></iframe>
-            //             </div>
-            //         </div>
-            //     </div>
-            // `;
-// targetDiv.innerHTML = `
-//     <div class="collapsible ${phishingClass}">
-//         <button class="collapsible-header">
-//             <span>${result.filename}</span>
-//             <div class="analytics-summary">
-//                 <div class="analytics-item"><span>SPF</span><span class="${result.analytics.spf}">${result.analytics.spf}</span></div>
-//                 <div class="analytics-item"><span>DKIM</span><span class="${result.analytics.dkim}">${result.analytics.dkim}</span></div>
-//                 <div class="analytics-item"><span>DMARC</span><span class="${result.analytics.dmarc}">${result.analytics.dmarc}</span></div>
-//             </div>
-//         </button>
-//
-//         <!-- REASONS BOX - ALWAYS VISIBLE -->
-//         <div class="reasons-box ${result.analytics.is_phishing ? 'phishing' : 'legit'}">
-//             <div class="confidence-badge ${result.analytics.confidence || 'medium'}">
-//                 Confidence: ${result.analytics.confidence?.charAt(0).toUpperCase() + result.analytics.confidence?.slice(1) || 'Medium'}
-//             </div>
-//             <strong>
-//                 ${result.analytics.is_phishing 
-//                     ? 'This email is PHISHING' 
-//                     : 'This email appears LEGITIMATE'}
-//             </strong>
-//             <ul>
-//                 ${result.analytics.reasons && result.analytics.reasons.length > 0
-//                     ? result.analytics.reasons.map(r => `<li>${r}</li>`).join('')
-//                     : '<li>No red flags detected.</li>'
-//                 }
-//             </ul>
-//         </div>
-//
-//         <!-- Full email preview (hidden until clicked) -->
-//         <div class="email-preview" style="display: none;">
-//             <div class="email-header">
-//                 <h3>${result.subject}</h3>
-//                 <p><strong>From:</strong> ${result.from}</p>
-//                 <p><strong>To:</strong> ${result.to}</p>
-//                 <p><strong>Date:</strong> ${result.date}</p>
-//             </div>
-//             <div class="email-body">
-//                 <iframe srcdoc="${result.body.replace(/"/g, '&quot;')}"></iframe>
-//             </div>
-//         </div>
-//     </div>
-// `;
-
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
+            function escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
 
         targetDiv.innerHTML = `
       <div class="collapsible ${result.analytics.is_phishing ? 'phishing' : 'legit'}">

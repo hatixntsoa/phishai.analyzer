@@ -113,19 +113,10 @@ h1 {
     transform: rotate(180deg);
 }
 
-/* .loading-spinner { */
-/*     border: 4px solid #f3f3f3; */
-/*     border-top: 4px solid #3498db; */
-/*     border-radius: 50%; */
-/*     width: 20px; */
-/*     height: 20px; */
-/*     animation: spin 1s linear infinite; */
-/* } */
-
 .loading-spinner {
-    flex-shrink: 0;                    /* THIS IS THE KEY — never shrink */
-    width: 20px !important;           /* Fixed size */
-    height: 20px !important;          /* Fixed size → always perfect circle */
+    flex-shrink: 0;
+    width: 20px !important;
+    height: 20px !important;
     border: 3px solid #f3f3f3;
     border-top: 3px solid #3498db;
     border-radius: 50%;
@@ -134,7 +125,6 @@ h1 {
     margin-left: 10px;
 }
 
-/* Optional: smaller on very tiny screens but still round */
 @media (max-width: 480px) {
     .loading-spinner {
         width: 18px !important;
@@ -175,7 +165,7 @@ h1 {
 .email-body iframe {
     width: 100%;
     border: 1px solid #eee;
-    overflow: hidden; /* Re-added to prevent iframe scrollbar */
+    overflow: hidden;
 }
 
 .modal-content .email-body iframe {
@@ -204,14 +194,14 @@ h1 {
 }
 
 .collapsible.legit {
-    background-color: #f0fdf4 !important;     /* Very light green */
-    border-left: 5px solid #22c55e;           /* Bright green left bar */
+    background-color: #f0fdf4 !important;
+    border-left: 5px solid #22c55e;
     border-right: 1px solid #c8e6c9;
     border-bottom: 1px solid #c8e6c9;
 }
 
 .collapsible.legit .collapsible-header {
-    background-color: #e9fce9 !important;     /* Slightly darker green for header */
+    background-color: #e9fce9 !important;
     border-top: 1px solid #c8e6c9;
     border-bottom: 1px solid #c8e6c9;
     border-right: none;
@@ -220,10 +210,8 @@ h1 {
 
 .collapsible.legit .reasons-box.legit {
     background-color: #e9fce9;
-    /* border: 1px solid #bbf7d0; */
 }
 
-/* Also make sure phishing keeps its red (for symmetry) */
 .collapsible.phishing {
     background-color: #fef2f2 !important;
     border-left: 5px solid #ef4444;
@@ -241,19 +229,17 @@ h1 {
 
 .collapsible.phishing .reasons-box.phishing {
     background-color: #fee2e2;
-    /* border: 1px solid #fca5a5; */
 }
 
 .phishing-flag {
-    border-left: 5px solid #f04747; /* Discord red */
-    background-color: #ffe0e0; /* Light red background */
+    border-left: 5px solid #f04747;
+    background-color: #ffe0e0;
 }
 
 .collapsible.phishing-flag .collapsible-header {
-    background-color: #ffe0e0; /* Ensure header also gets the light red background */
+    background-color: #ffe0e0;
 }
 
-/* Modal Styles */
 .modal {
     display: none;
     position: fixed;
@@ -275,11 +261,10 @@ h1 {
     border: 1px solid #888;
     width: 80%;
     max-width: 900px;
-    max-height: 90vh; /* Max height for internal scrolling */
-    overflow-y: auto; /* Enable internal scrolling */
+    max-height: 90vh;
+    overflow-y: auto;
     border-radius: 8px;
 }
-
 
 .close-button {
     color: #aaa;
@@ -288,7 +273,7 @@ h1 {
     right: 20px;
     font-size: 28px;
     font-weight: bold;
-    z-index: 1001; /* Ensure it's above modal content */
+    z-index: 1001;
 }
 
 .close-button:hover,
@@ -298,34 +283,25 @@ h1 {
     cursor: pointer;
 }
 
-#modal-body {
-    /* Removed max-height and overflow-y: hidden; */
-}
-
 .modal-content .email-body iframe {
-    min-height: 60vh; /* Keep min-height to prevent initial collapse */
-    /* Removed max-height and overflow-y: auto; */
+    min-height: 60vh;
 }
 
 .modal-content .email-header {
     position: sticky;
     top: 0;
     z-index: 10;
-    background-color: #fefefe; /* Ensure background is opaque when sticky */
-    /* Removed box-shadow */
-    width: 100%; /* Ensure header matches parent width */
-    box-sizing: border-box; /* Include padding in width calculation */
+    background-color: #fefefe;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .modal-content.modal-phishing-flag {
-    /* Removed background-color */
-    border: 2px solid #f04747; /* Red border for phishing modal */
+    border: 2px solid #f04747;
 }
 
-/* Unified Reasons Box - Always visible, no left border */
 .reasons-box {
     padding: 16px;
-    /* margin: 12px 15px; */
     margin: 12px 15px 24px 15px !important;
     border-radius: 8px;
     font-size: 0.95em;
@@ -366,7 +342,6 @@ h1 {
     margin-bottom: 5px;
 }
 
-/* Keep confidence badge colors */
 .confidence-badge {
     display: inline-block;
     padding: 5px 12px;
@@ -377,27 +352,24 @@ h1 {
     margin-bottom: 10px;
 }
 
-/* LEGIT EMAIL → Confidence badge ALWAYS green (overrides high/medium/low) */
 .collapsible.legit .confidence-badge {
-    background-color: #22c55e !important;  /* Bright green */
+    background-color: #22c55e !important;
     color: white !important;
 }
 
-/* PHISHING EMAIL → Keep original red/orange colors (high/medium) */
 .collapsible.phishing .confidence-badge.high {
-    background-color: #ef4444 !important;  /* Red for high */
+    background-color: #ef4444 !important;
 }
 
 .collapsible.phishing .confidence-badge.medium {
-    background-color: #f97316 !important;  /* Orange for medium */
+    background-color: #f97316 !important;
 }
 
 .collapsible.phishing .confidence-badge.low {
-    background-color: #84cc16 !important;  /* Lime for low (rare) */
+    background-color: #84cc16 !important;
 }
 
 
-/* FIX: Loading state — full clean border on all sides */
 .collapsible .collapsible-header .loading-spinner {
     display: inline-block;
 }
