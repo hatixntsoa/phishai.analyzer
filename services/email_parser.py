@@ -23,6 +23,23 @@ def extract_email_data(msg) -> Tuple[Dict, str]:
             match = re.search(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', from_header)
             sender_email = match.group(0) if match else from_header
 
+    to_header = msg.get("To", "")
+    recipient_name = None
+    recipient_email = to_header
+
+    parsed_to = email.utils.parseaddr(to_header)
+    if parsed_to[0]:
+        recipient_name = parsed_to[0]
+        recipient_email = parsed_to[1]
+    else:
+        match_to = re.search(r'<([^>]+)>', to_header)
+        if match_to:
+            recipient_email = match_to.group(1)
+            recipient_name = to_header.replace(f"<{recipient_email}>", "").strip().strip('"\'')
+        else:
+            match_to = re.search(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', to_header)
+            recipient_email = match_to.group(0) if match_to else to_header
+
     subject = msg.get("Subject", "(no subject)")
 
     body_text = ""
@@ -67,6 +84,8 @@ def extract_email_data(msg) -> Tuple[Dict, str]:
     email_data = {
         "sender_name": sender_name,
         "sender_email": sender_email.lower(),
+        "recipient_name": recipient_name,
+        "recipient_email": recipient_email.lower(),
         "subject": subject,
         "body": body_text.strip(),
         "attachment_filenames": attachment_filenames
