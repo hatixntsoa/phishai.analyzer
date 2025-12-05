@@ -1,6 +1,7 @@
 from typing import Tuple, Dict, List
 from email.policy import default
 from bs4 import BeautifulSoup
+from html import escape
 
 import email
 import re
@@ -61,6 +62,8 @@ def extract_email_data(msg) -> Tuple[Dict, str]:
                     body_html = payload.decode(errors='ignore')
                     soup = BeautifulSoup(body_html, 'html.parser')
                     body_text += soup.get_text(separator='\n') + "\n"
+        if (not body_html or body_html.strip() == "<p>No content</p>") and body_text.strip():
+            body_html = f"<pre style='white-space: pre-wrap;'>{escape(body_text.strip())}</pre>"
     else:
         payload = msg.get_payload(decode=True)
         if payload:

@@ -197,7 +197,15 @@ function handleFiles(files) {
                 return div.innerHTML;
             }
 
-        targetDiv.innerHTML = `
+            function escapePlainTextToHtml(text) {
+                if (!text) return '';
+                return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            }
+
+            const bodyHtml = result.body_html || result.body || `<pre style="white-space:pre-wrap;">${escapePlainTextToHtml(result.body || '')}</pre>`;
+            const iframeSrcdoc = bodyHtml.replace(/"/g, '&quot;');
+
+            targetDiv.innerHTML = `
       <div class="collapsible ${result.analytics.is_phishing ? 'phishing' : 'legit'}">
         <button class="collapsible-header">
             <span>${result.filename}</span>
@@ -239,7 +247,7 @@ function handleFiles(files) {
               <div class="email-address-line"><strong>Date:</strong> ${escapeHtml(result.date)}</div>
           </div>
             <div class="email-body">
-                <iframe srcdoc="${result.body.replace(/"/g, '&quot;')}"></iframe>
+                <iframe sandbox="allow-same-origin allow-scripts" srcdoc="${iframeSrcdoc}"></iframe>
             </div>
         </div>
     </div>
