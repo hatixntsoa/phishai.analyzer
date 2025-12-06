@@ -146,6 +146,16 @@ function handleFiles(files) {
     const fileMap = new Map();
     const addRow = resultsDiv.querySelector('.add-more-row');
 
+    function escapeForSrcdoc(html) {
+      if (!html || html.trim() === '') return '<p style="color:#999;">No content</p>';
+      return String(html)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+    }
+
     // Reverse the file list to handle browser's reverse selection order
     for (const file of [...files].reverse()) {
         if (!file.name.endsWith('.eml')) continue;
@@ -247,7 +257,11 @@ function handleFiles(files) {
               <div class="email-address-line"><strong>Date:</strong> ${escapeHtml(result.date)}</div>
           </div>
             <div class="email-body">
-                <iframe sandbox="allow-same-origin allow-scripts" srcdoc="${iframeSrcdoc}"></iframe>
+              <iframe
+                seamless
+                sandbox="allow-scripts"
+                srcdoc="${escapeForSrcdoc(result.body_html)}">
+              </iframe>
             </div>
         </div>
     </div>

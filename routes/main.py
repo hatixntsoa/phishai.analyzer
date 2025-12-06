@@ -29,7 +29,7 @@ def analyze():
                 'from': msg.get('From', ''),
                 'to': msg.get('To', ''),
                 'date': msg.get('Date', ''),
-                'body': body_html,
+                'body_html': body_html,
                 'analytics': {
                     'spf': 'unknown',
                     'dkim': 'unknown',

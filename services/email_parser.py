@@ -46,35 +46,54 @@ def extract_email_data(msg) -> Tuple[Dict, str]:
     body_text = ""
     body_html = "<p>No content</p>"
 
+    def get_part_text(part):
+        """Safely extract text from a part, handling charset and encoding"""
+        payload = part.get_payload(decode=True)
+        if payload is None:
+            return ""
+
+        charset = part.get_content_charset() or 'utf-8'
+        if charset.lower() in ('us-ascii', 'ascii'):
+            charset = 'utf-8'
+
+        try:
+            return payload.decode(charset, errors='replace')
+        except (LookupError, UnicodeDecodeError):
+            try:
+                return payload.decode('utf-8', errors='replace')
+            except:
+                return payload.decode('latin-1', errors='replace')
+
     if msg.is_multipart():
+        has_html = False
         for part in msg.walk():
             ctype = part.get_content_type()
-            cdispo = str(part.get('Content-Disposition'))
-
-            if ctype == "text/plain" and 'attachment' not in cdispo:
-                payload = part.get_payload(decode=True)
-                if payload:
-                    body_text += payload.decode(errors='ignore') + "\n"
-
-            if ctype == "text/html" and 'attachment' not in cdispo:
-                payload = part.get_payload(decode=True)
-                if payload:
-                    body_html = payload.decode(errors='ignore')
+            cdispo = str(part.get('Content-Disposition') or '')
+            if 'attachment' in cdispo:
+                continue
+            if ctype == "text/plain":
+                text = get_part_text(part)
+                body_text += text + "\n"
+                if not has_html:
+                    body_html = f"<pre style='white-space: pre-wrap; word-wrap: break-word; font-family: monospace; background:transparent; padding:16px; ; overflow-x:auto;'>{text}</pre>"
+            elif ctype == "text/html":
+                html = get_part_text(part)
+                if html.strip():
+                    body_html = html
+                    has_html = True
                     soup = BeautifulSoup(body_html, 'html.parser')
                     body_text += soup.get_text(separator='\n') + "\n"
         if (not body_html or body_html.strip() == "<p>No content</p>") and body_text.strip():
             body_html = f"<pre style='white-space: pre-wrap;'>{escape(body_text.strip())}</pre>"
     else:
-        payload = msg.get_payload(decode=True)
-        if payload:
-            text = payload.decode(errors='ignore')
-            if msg.get_content_type() == "text/html":
-                body_html = text
-                soup = BeautifulSoup(text, 'html.parser')
-                body_text = soup.get_text(separator='\n')
-            else:
-                body_text = text
-                body_html = f"<pre style='white-space: pre-wrap;'>{text}</pre>"
+        text = get_part_text(msg)
+        if msg.get_content_type() == "text/html":
+            body_html = text
+            soup = BeautifulSoup(text, 'html.parser')
+            body_text = soup.get_text(separator='\n')
+        else:
+            body_text = text
+            body_html = f"<pre style='white-space: pre-wrap; word-wrap: break-word;'>{text}</pre>"
 
     attachment_filenames = []
     if msg.is_multipart():
