@@ -24,6 +24,7 @@ def get_phishing_detection_prompt(email: EmailData) -> str:
 
         === CLASSIFICATION RULES (follow exactly) ===
         CLASSIFY AS "phishing" ONLY if ONE OR MORE of these are present:
+        • The sender name is not similar to the username used for the sender email
         • Urgency/threats (account locked, payment overdue, legal action)
         • Requests to click links + login / reset password / enter credentials
         • Requests to download attachments or enable macros
