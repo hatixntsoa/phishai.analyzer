@@ -5,6 +5,7 @@ from typing import Dict, Any
 from fastapi import FastAPI
 
 import json
+import sys
 import re
 import os
 
@@ -20,8 +21,17 @@ GEMINI_MODEL = "gemini-2.5-flash"
 load_dotenv()
 API_KEY = os.getenv("GEMINI_API_KEY")
 
-gemini_client = genai.Client(api_key=API_KEY)
+# Check if the API key is provided
+if not API_KEY or API_KEY == "your_gemini_api_key_here" or API_KEY.strip() == "":
+    print("❌ Error: GEMINI_API_KEY is missing or still set to default value.")
+    print("   Please add your actual Gemini API key in the .env file like this:")
+    print()
+    print("   GEMINI_API_KEY=AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+    print()
+    print("   Get your key from: https://aistudio.google.com/app/apikey")
+    sys.exit(0)
 
+gemini_client = genai.Client(api_key=API_KEY)
 
 def ask_gemini(prompt: str) -> str:
     response = gemini_client.models.generate_content(
